@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Keeper</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background: white;
+    padding: 20px;
+    width: 350px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+h2 {
+    text-align: center;
+}
+
+input, textarea, button {
+    width: 100%;
+    margin-top: 8px;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+textarea {
+    resize: none;
+    height: 60px;
+}
+
+button {
+    background: #ff6fa5;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #ff3f87;
+}
+
+.event {
+    background: #f9f9f9;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>📅 Event Keeper</h2>
+
+    <input type="text" id="title" placeholder="Event Title">
+    <input type="date" id="date">
+    <textarea id="desc" placeholder="Description"></textarea>
+    <button onclick="addEvent()">Add Event</button>
+
+    <div id="events"></div>
+</div>
+
+<script>
+let events = JSON.parse(localStorage.getItem("events")) || [];
+
+function saveEvents() {
+    localStorage.setItem("events", JSON.stringify(events));
+}
+
+function showEvents() {
+    const container = document.getElementById("events");
+    container.innerHTML = "";
+    events.forEach((e, index) => {
+        container.innerHTML += `
+            <div class="event">
+                <strong>${e.title}</strong><br>
+                ${e.date}<br>
+                ${e.desc}<br>
+                <button onclick="deleteEvent(${index})">Delete</button>
+            </div>
+        `;
+    });
+}
+
+function addEvent() {
+    const title = document.getElementById("title").value;
+    const date = document.getElementById("date").value;
+    const desc = document.getElementById("desc").value;
+
+    if (!title || !date || !desc) {
+        alert("Fill all fields!");
+        return;
+    }
+
+    events.push({ title, date, desc });
+    saveEvents();
+    showEvents();
+
+    document.getElementById("title").value = "";
+    document.getElementById("date").value = "";
+    document.getElementById("desc").value = "";
+}
+
+function deleteEvent(index) {
+    events.splice(index, 1);
+    saveEvents();
+    showEvents();
+}
+
+showEvents();
+</script>
+
+</body>
+</html>
